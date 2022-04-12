@@ -1978,7 +1978,7 @@
     "inherits" "^2.0.4"
     "readable-stream" "^3.4.0"
 
-"blueimp-md5@^2.3.0":
+"blueimp-md5@^2.3", "blueimp-md5@^2.3.0":
   "integrity" "sha512-DRQrD6gJyy8FbiE4s+bDoXS9hiW3Vbx5uCdwvcCf3zLHL+Iv7LtGHLpr+GZV8rHG8tK766FGYBwRbu8pELTt+w=="
   "resolved" "https://registry.npmjs.org/blueimp-md5/-/blueimp-md5-2.19.0.tgz"
   "version" "2.19.0"
@@ -5687,6 +5687,13 @@
   "integrity" "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ=="
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
   "version" "16.13.1"
+
+"react-native-avatar-gravatar@^0.0.4":
+  "integrity" "sha1-fSFdAlm7fa4UenVbM9TASHMg+Xs="
+  "resolved" "https://registry.npmjs.org/react-native-avatar-gravatar/-/react-native-avatar-gravatar-0.0.4.tgz"
+  "version" "0.0.4"
+  dependencies:
+    "blueimp-md5" "^2.3"
 
 "react-native-codegen@*":
   "integrity" "sha512-i3TtOB7IWIhaKZCg7EMBcXmNtaxEMFyzGQ4Zf6ZR1esj6gs36OWpYj357nSqeqzPKUqb8P1pUvmhoLIK4uVNeQ=="

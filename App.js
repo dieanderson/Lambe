@@ -7,13 +7,33 @@
  */
 
 import React, {Component} from 'react'
+import { 
+    View,
+} from 'react-native'
 
 import Header from './src/components/Header'
+import Post from './src/components/Post'
 
 export default class App extends Component {
     render() {
+
+        const comments = [{
+            nickname: 'Karina Ferreira',
+            comment: 'Linda foto!',
+        },{
+            nickname: 'Gabriel Ferreira',
+            comment: 'Não gostei da paisagem!',    
+        }]
+
         return(
-            <Header />
+            <View style={{ flex: 1 }}>
+                <Header />
+                <Post 
+                    image={require('./assets/imgs/fence.jpg')}
+                    comments={comments}
+                />
+
+            </View>
         )
     }
 }

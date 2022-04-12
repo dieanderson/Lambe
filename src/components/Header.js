@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     rowContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        marginBottom: Platform.OS === 'ios' ? 10 : 0,
     },
     image: {
         height: 30,
