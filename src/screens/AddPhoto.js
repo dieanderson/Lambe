@@ -91,6 +91,27 @@ class AddPhoto extends Component {
         })
     }
 
+    selectType = () => {
+        Alert.alert('Selecione', 'Informe de onde você quer pegar a foto',
+            [
+                {
+                    text: 'Galeria',
+                    onPress: () => this.pickImage(),
+                    style: 'default',
+                },
+                {
+                    text: 'Camera',
+                    onPress: () => this.captureImage(),
+                    style: 'default',
+                },
+            ],
+            {
+                cancelable: true,
+                onDismiss: () => console.log('Tratar depois...')
+            }
+        )
+    }
+
     save = async () => {
         Alert.alert('Imagem Adicionada', this.state.comment)
     }
@@ -104,15 +125,11 @@ class AddPhoto extends Component {
                         <Image source={{uri: this.state.uri}}
                             style={styles.image} />                            
                     </View>
-                    <TouchableOpacity onPress={this.pickImage}
+                    <TouchableOpacity onPress={this.selectType}
                         style={styles.buttom}>
-                        <Text style={styles.buttomText}>Escolha foto</Text>
+                        <Text style={styles.buttomText}>Escolha a foto</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={this.captureImage}
-                        style={styles.buttom}>
-                        <Text style={styles.buttomText}>Abrir a Câmera</Text>
-                    </TouchableOpacity>
-                    <TextInput placeholder='Algum comentário para a foto?'
+                    <TextInput placeholder='Adicione uma descrição para a foto...'
                         style={styles.input} value={this.state.comment}
                         onChangeText={comment => this.setState({ comment })} />
                     <TouchableOpacity onPress={this.save}
