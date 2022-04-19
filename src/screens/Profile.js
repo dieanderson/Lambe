@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { connect } from 'react-redux'
 import {
     View,
     Text,
@@ -8,21 +9,24 @@ import {
 } from 'react-native'
 import md5 from 'crypto-js/md5'
 
+import { logout } from '../store/actions/user'
+
 class Profile extends Component {
     
     logout = () => {
-
+        this.props.onLogout()
+        this.props.navigation.navigate('Auth')
     }
 
     render () {
-        const options = { email: 'dieanderson@gmail.com'}
+        const options = { email: this.props.email}
         const avatar = 'https://www.gravatar.com/avatar/'+md5(options.email).toString()
 
         return (
             <View style={styles.container}>
                 <Image source={{ uri: avatar }} style={styles.avatar}/>
-                <Text style={styles.nickname}>Diego Anderson</Text>
-                <Text style={styles.email}>dieanderson@gmail.com</Text>
+                <Text style={styles.nickname}>{this.props.name}</Text>
+                <Text style={styles.email}>{this.props.email}</Text>
                 <TouchableOpacity onPress={this.logout} style={styles.button}>
                     <Text style={styles.buttonText}>Sair</Text>
                 </TouchableOpacity>
@@ -62,4 +66,18 @@ const styles = StyleSheet.create({
     },
 })
 
-export default Profile
+const mapStateToProps = ({ user }) => {
+    return {
+        email: user.email,
+        name: user.name,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onLogout: () => dispatch(logout())
+    }
+}
+
+//export default Profile
+export default connect(mapStateToProps, mapDispatchToProps)(Profile)
