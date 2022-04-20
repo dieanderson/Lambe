@@ -16,6 +16,8 @@ import {
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
 
 import { addPost } from '../store/actions/posts'
+
+const noUser = 'Você precisa estar logado para adicionar imagens'
 class AddPhoto extends Component {
     options = {
         saveToPhotos: true,
@@ -95,6 +97,10 @@ class AddPhoto extends Component {
     }
 
     selectType = () => {
+        if (!this.props.name) {
+            Alert.alert('Atenção', noUser)
+            return
+        }
         Alert.alert('Selecione', 'Informe de onde você quer pegar a foto',
             [
                 {
@@ -112,10 +118,14 @@ class AddPhoto extends Component {
                 cancelable: true,
                 onDismiss: () => console.log('Tratar depois...')
             }
-        )
+        )        
     }
 
     save = async () => {
+        if (!this.props.name) {
+            Alert.alert('Atenção', noUser)
+            return
+        }
         this.props.onAddPost({
             id: Math.random(),
             nickname: this.props.name,
@@ -137,7 +147,7 @@ class AddPhoto extends Component {
                 <View style={styles.container}>
                     <Text style={styles.title}>Compartilhe uma imagem</Text>
                     <View style={styles.imageContainer}>
-                        <Image source={{uri: this.state.uri}}
+                        <Image key={new Date()} source={{uri: this.state.uri}}
                             style={styles.image} />                            
                     </View>
                     <TouchableOpacity onPress={this.selectType}
@@ -146,6 +156,7 @@ class AddPhoto extends Component {
                     </TouchableOpacity>
                     <TextInput placeholder='Adicione uma descrição para a foto...'
                         style={styles.input} value={this.state.comment}
+                        editable={this.props.name ? true : false}
                         onChangeText={comment => this.setState({ comment })} />
                     <TouchableOpacity onPress={this.save}
                         disabled={this.props.loading}
@@ -171,7 +182,7 @@ const styles = StyleSheet.create({
     imageContainer: {
         width: '90%',
         height: Dimensions.get('window').width / 2,
-        backgroundColor: '#EEE',
+        backgroundColor: '#DDD',
         marginTop: 10
     },
     image: {

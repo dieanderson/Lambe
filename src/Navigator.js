@@ -1,4 +1,5 @@
-import React from 'react'
+import React, {Component} from 'react'
+import { connect } from 'react-redux'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -20,37 +21,49 @@ const routeIcon = {
     Profile: 'user'
 }
 
-export default props => {
-    
+class Navigator extends Component {    
+    render() {
+        const Auth = () => (
+            <AuthStack.Navigator initialRouteName='Login'>
+                <AuthStack.Screen name='Login' component={Login} />
+                <AuthStack.Screen name='Register' component={Register} />
+            </AuthStack.Navigator>
+        )
 
-    const Auth = () => (
-        <AuthStack.Navigator initialRouteName='Login'>
-            <AuthStack.Screen name='Login' component={Login} />
-            <AuthStack.Screen name='Register' component={Register} />
-        </AuthStack.Navigator>
-    )
-
-    const AuthOrProfile = () => (
-        <SwitchStack.Navigator screenOptions={{headerShown: false}}>
-            <SwitchStack.Screen name='Auth' component={Auth} />  
-            <SwitchStack.Screen name='Home' component={Profile} />                      
-        </SwitchStack.Navigator>
-    )
+        const AuthOrProfile = () => (
+            <SwitchStack.Navigator screenOptions={{headerShown: false}}>
+                { this.props.email ?
+                    <SwitchStack.Screen name='Home' component={Profile} />                     
+                :
+                    <SwitchStack.Screen name='Auth' component={Auth} />     
+                }                      
+            </SwitchStack.Navigator>
+        )
+        
+        return (
+            <NavigationContainer>
+                <Tab.Navigator 
+                    initialRouteName='Feed' 
+                    screenOptions={({ route }) => ({
+                        headerShown: false,
+                        tabBarShowLabel: false,
+                        tabBarIcon: ({ color, size }) => <Icon name={routeIcon[route.name]} size={size} color={color}/>
+                    })}
+                >
+                    <Tab.Screen name='Feed' component={Feed} />
+                    <Tab.Screen name='AddPhoto' component={AddPhoto} />
+                    <Tab.Screen name='Profile' component={AuthOrProfile} />
+                </Tab.Navigator>
+            </NavigationContainer>
+        )
+    }
     
-    return (
-        <NavigationContainer>
-            <Tab.Navigator 
-                initialRouteName='Feed' 
-                screenOptions={({ route }) => ({
-                    headerShown: false,
-                    tabBarShowLabel: false,
-                    tabBarIcon: ({ color, size }) => <Icon name={routeIcon[route.name]} size={size} color={color}/>
-                })}
-            >
-                <Tab.Screen name='Feed' component={Feed} />
-                <Tab.Screen name='AddPhoto' component={AddPhoto} />
-                <Tab.Screen name='Profile' component={AuthOrProfile} />
-            </Tab.Navigator>
-        </NavigationContainer>
-    )
 }
+
+const mapStateToProps = ({ user }) => {
+    return {
+        email: user.email,
+    }
+}
+
+export default connect(mapStateToProps, null)(Navigator)
