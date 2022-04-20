@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { connect } from 'react-redux'
 import {
     View,
     Text,
@@ -14,10 +15,12 @@ import {
 } from 'react-native'
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
 
+import { addPost } from '../store/actions/posts'
 class AddPhoto extends Component {
     options = {
         saveToPhotos: true,
         mediaType: 'photo',
+        includeBase64: true,
         maxWidth: 800,
         maxHeight: 600,
     }
@@ -73,7 +76,7 @@ class AddPhoto extends Component {
                 if (!response.didCancel) {
                     this.setState({ 
                         uri: response.assets[0].uri, 
-                        base64: response.assets[0].data, 
+                        base64: response.assets[0].base64, 
                     })
                 }
             });
@@ -85,7 +88,7 @@ class AddPhoto extends Component {
             if (!response.didCancel) {
                 this.setState({
                     uri: response.assets[0].uri,
-                    base64: response.assets[0].data,
+                    base64: response.assets[0].base64,
                 })
             }
         })
@@ -113,7 +116,19 @@ class AddPhoto extends Component {
     }
 
     save = async () => {
-        Alert.alert('Imagem Adicionada', this.state.comment)
+        this.props.onAddPost({
+            id: Math.random(),
+            nickname: this.props.name,
+            email: this.props.email,
+            image: this.state.uri,
+            comments: [{
+                nickname: this.props.name,
+                comment: this.state.comment,
+            }]
+        })
+
+        this.setState({ uri: null, comment: '' })
+        this.props.navigation.navigate('Feed')
     }
 
     render() {
@@ -182,4 +197,18 @@ const styles = StyleSheet.create({
     }
 })
 
-export default AddPhoto
+const mapStateToProps = ({ user }) => {
+    return {
+        email: user.email,
+        name: user.name,
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onAddPost: post => dispatch(addPost(post))
+    }
+}
+
+//export default AddPhoto
+export default connect(mapStateToProps, mapDispatchToProps)(AddPhoto)

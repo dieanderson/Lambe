@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import {
     StyleSheet,
     FlatList,
@@ -9,47 +10,12 @@ import Header from '../components/Header'
 import Post from '../components/Post'
 
 class Feed extends Component {
-    state = {
-        posts: [{
-            id: Math.random(),
-            nickname: 'Gabriel Ferreira',
-            email: 'gabriel@teste.com.br',
-            image: require('../../assets/imgs/fence.jpg'),
-            comments: [{
-                nickname: 'Diego Anderson',
-                comment: 'Bela foto!',
-            },{
-                nickname: 'Karina Ferreia',
-                comment: 'Não curti muito!',
-            }]
-        },{
-            id: Math.random(),
-            nickname: 'Mariana Ferreira',
-            email: 'mari@teste.com.br',
-            image: require('../../assets/imgs/boat.jpg'),
-            comments: [{
-                nickname: 'Diego Anderson',
-                comment: 'que massa',
-            },{
-                nickname: 'Karina Ferreia',
-                comment: 'gostei demais',
-            }]
-
-        },{            
-            id: Math.random(),
-            nickname: 'Diego Anderson',
-            email: 'dieanderson@gmail.com',
-            image: require('../../assets/imgs/gate.jpg'),
-            comments: []  
-        }]
-    }
-
     render() {
         return (
             <View style={styles.container}>
                 <Header />
                 <FlatList
-                    data={this.state.posts}
+                    data={this.props.posts}
                     keyExtractor={item => `${item.id}`}
                     renderItem={({ item }) => <Post key={item.id} {...item} />}
                 />
@@ -67,4 +33,11 @@ const styles = StyleSheet.create({
     },
 })
 
-export default Feed
+const mapStateToProps = ({ posts }) => {
+    return {
+        posts: posts.posts
+    }
+}
+
+//export default Feed
+export default connect(mapStateToProps, null)(Feed)

@@ -14,7 +14,7 @@ class Post extends Component {
     render() {
         return(
             <View style={styles.container}>
-                <Image source={this.props.image} style={styles.image}/>
+                <Image source={{ uri: this.props.image }} style={styles.image}/>
                 <Author email={this.props.email} nickname={this.props.nickname} />
                 <Comments comments={this.props.comments} />
                 <AddComment />
