@@ -1,5 +1,3 @@
-import { Image } from 'react-native'
-
 import { ADD_POST, ADD_COMMENT } from '../actions/actionTypes'
 
 import img1 from '../../../assets/imgs/fence.jpg'
@@ -11,7 +9,7 @@ const initialState = {
         id: Math.random(),
         nickname: 'Gabriel Ferreira',
         email: 'gabriel@teste.com.br',
-        image: Image.resolveAssetSource(img1).uri,
+        image: img1,
         comments: [{
             nickname: 'Diego Anderson',
             comment: 'Bela foto!',
@@ -23,7 +21,7 @@ const initialState = {
         id: Math.random(),
         nickname: 'Mariana Ferreira',
         email: 'mari@teste.com.br',
-        image: Image.resolveAssetSource(img2).uri,
+        image: img2,
         comments: [{
             nickname: 'Diego Anderson',
             comment: 'que massa',
@@ -35,7 +33,7 @@ const initialState = {
         id: Math.random(),
         nickname: 'Diego Anderson',
         email: 'dieanderson@gmail.com',
-        image: Image.resolveAssetSource(img3).uri,
+        image: img3,
         comments: []  
     }]
 }

@@ -28,8 +28,7 @@ class AddPhoto extends Component {
     }
 
     state = {
-        uri: null,
-        base64: null,
+        image: null,
         comment: '',
     }
 
@@ -76,9 +75,9 @@ class AddPhoto extends Component {
         if (isCameraPermitted && isStoragePermitted) {
             launchCamera(this.options, (response) => {
                 if (!response.didCancel) {
-                    this.setState({ 
+                    this.setState({ image: {
                         uri: response.assets[0].uri, 
-                        base64: response.assets[0].base64, 
+                        base64: response.assets[0].base64, } 
                     })
                 }
             });
@@ -88,9 +87,9 @@ class AddPhoto extends Component {
     pickImage = () => {
         launchImageLibrary(this.options, (response) => {
             if (!response.didCancel) {
-                this.setState({
+                this.setState({ image: {
                     uri: response.assets[0].uri,
-                    base64: response.assets[0].base64,
+                    base64: response.assets[0].base64, }
                 })
             }
         })
@@ -130,14 +129,14 @@ class AddPhoto extends Component {
             id: Math.random(),
             nickname: this.props.name,
             email: this.props.email,
-            image: this.state.uri,
+            image: this.state.image,
             comments: [{
                 nickname: this.props.name,
                 comment: this.state.comment,
             }]
         })
 
-        this.setState({ uri: null, comment: '' })
+        this.setState({ image: null, comment: '' })
         this.props.navigation.navigate('Feed')
     }
 
@@ -147,8 +146,7 @@ class AddPhoto extends Component {
                 <View style={styles.container}>
                     <Text style={styles.title}>Compartilhe uma imagem</Text>
                     <View style={styles.imageContainer}>
-                        <Image key={new Date()} source={{uri: this.state.uri}}
-                            style={styles.image} />                            
+                        <Image key={new Date()} source={this.state.image} style={styles.image} />                            
                     </View>
                     <TouchableOpacity onPress={this.selectType}
                         style={styles.buttom}>
