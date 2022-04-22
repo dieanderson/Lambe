@@ -32,6 +32,16 @@ class AddPhoto extends Component {
         comment: '',
     }
 
+    componentDidUpdate = prevProps => {
+        if (prevProps.loading && !this.props.loading) {
+            this.setState({
+                image: null,
+                comment: '',
+            })
+            this.props.navigation.navigate('Feed')
+        }
+    }
+
     requestCameraPermission = async () => {
         if (Platform.OS === 'android') {
             try {
@@ -135,9 +145,6 @@ class AddPhoto extends Component {
                 comment: this.state.comment,
             }]
         })
-
-        this.setState({ image: null, comment: '' })
-        this.props.navigation.navigate('Feed')
     }
 
     render() {
@@ -149,12 +156,13 @@ class AddPhoto extends Component {
                         <Image key={new Date()} source={this.state.image} style={styles.image} />                            
                     </View>
                     <TouchableOpacity onPress={this.selectType}
-                        style={styles.buttom}>
+                        disabled={this.props.loading}
+                        style={[styles.buttom, this.props.loading ? styles.buttonDisabled : null]}>
                         <Text style={styles.buttomText}>Escolha a foto</Text>
                     </TouchableOpacity>
                     <TextInput placeholder='Adicione uma descrição para a foto...'
                         style={styles.input} value={this.state.comment}
-                        editable={this.props.name ? true : false}
+                        editable={this.props.name && this.props.loading ? true : false}
                         onChangeText={comment => this.setState({ comment })} />
                     <TouchableOpacity onPress={this.save}
                         disabled={this.props.loading}
@@ -206,10 +214,11 @@ const styles = StyleSheet.create({
     }
 })
 
-const mapStateToProps = ({ user }) => {
+const mapStateToProps = ({ user, posts }) => {
     return {
         email: user.email,
         name: user.name,
+        loading: posts.isUploading,
     }
 }
 
