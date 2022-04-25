@@ -24,6 +24,7 @@ class Register extends Component {
                     placeholder='Nome'
                     style={styles.input}
                     autoFocus={true}
+                    autoCapitalize='words'
                     value={this.state.name}
                     onChangeText={name => this.setState({ name })}
                 />
@@ -31,6 +32,7 @@ class Register extends Component {
                     placeholder='E-mail'
                     style={styles.input}
                     keyboardType='email-address'
+                    autoCapitalize='none'
                     value={this.state.email}
                     onChangeText={email => this.setState({ email })}
                 />
