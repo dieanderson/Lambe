@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { connect, Connect } from 'react-redux'
+import { connect } from 'react-redux'
 import {
     View,
     Text,
