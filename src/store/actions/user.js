@@ -38,6 +38,7 @@ export const createUser = user => {
         returnSecureToken: true
       }
     return dispatch => {
+        dispatch(loadingUser())
         axios.post(url_signUp, dataUser, config)
             .catch(err => {
                 dispatch(setMessage({
@@ -56,11 +57,11 @@ export const createUser = user => {
                                 text: err,
                             }))
                         })
-                        .then(res => {
-                            dispatch(setMessage({
-                                title: 'Criar Usuário',
-                                text: 'Usuário Criado com Sucesso!',
-                            }))
+                        .then(() => {
+                            delete user.password
+                            user.id = res.data.localId
+                            dispatch(userLogged(user))
+                            dispatch(userLoaded())
                         })
                 }
             })
@@ -104,7 +105,7 @@ export const login = user => {
                             }))
                         })
                         .then(res => {
-                            user.password = null
+                            delete user.password
                             user.name = res.data.name
                             dispatch(userLogged(user))
                             dispatch(userLoaded())
