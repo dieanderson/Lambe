@@ -10,6 +10,7 @@ import AddPhoto from './screens/AddPhoto'
 import Profile from './screens/Profile'
 import Login from './screens/Login'
 import Register from './screens/Register'
+import Splash from './screens/Splash'
 
 const Tab = createBottomTabNavigator()
 const SwitchStack = createNativeStackNavigator()
@@ -39,7 +40,7 @@ class Navigator extends Component {
                 }                      
             </SwitchStack.Navigator>
         )
-        
+
         return (
             <NavigationContainer>
                 <Tab.Navigator 
@@ -53,7 +54,7 @@ class Navigator extends Component {
                     <Tab.Screen name='Feed' component={Feed} />
                     <Tab.Screen name='AddPhoto' component={AddPhoto} />
                     <Tab.Screen name='Profile' component={AuthOrProfile} />
-                </Tab.Navigator>
+                </Tab.Navigator>  
             </NavigationContainer>
         )
     }
