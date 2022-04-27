@@ -1,5 +1,4 @@
-import React, {Component} from 'react'
-import { connect } from 'react-redux'
+import React from 'react'
 import {
     View,
     Text,
@@ -9,30 +8,25 @@ import {
 } from 'react-native'
 import md5 from 'crypto-js/md5'
 
-import { logout } from '../store/actions/user'
+import useUser from "../data/hooks/useUser"
 
-class Profile extends Component {
+export default props => {
+    const { name, email, logout } = useUser()
     
-    logout = () => {
-        this.props.onLogout()
-        //this.props.navigation.navigate('Auth')
-    }
+    const options = { email }
+    const avatar = 'https://www.gravatar.com/avatar/'+md5(options.email).toString()
 
-    render () {
-        const options = { email: this.props.email}
-        const avatar = 'https://www.gravatar.com/avatar/'+md5(options.email).toString()
-
-        return (
-            <View style={styles.container}>
-                <Image source={{ uri: avatar }} style={styles.avatar}/>
-                <Text style={styles.nickname}>{this.props.name}</Text>
-                <Text style={styles.email}>{this.props.email}</Text>
-                <TouchableOpacity onPress={this.logout} style={styles.button}>
-                    <Text style={styles.buttonText}>Sair</Text>
-                </TouchableOpacity>
-            </View>
-        )
-    }
+    return (
+        <View style={styles.container}>
+            <Image source={{ uri: avatar }} style={styles.avatar}/>
+            <Text style={styles.nickname}>{name}</Text>
+            <Text style={styles.email}>{email}</Text>
+            <TouchableOpacity onPress={logout} style={styles.button}>
+                <Text style={styles.buttonText}>Sair</Text>
+            </TouchableOpacity>
+        </View>
+    )
+    
 }
 
 const styles = StyleSheet.create({
@@ -65,19 +59,3 @@ const styles = StyleSheet.create({
         color: '#FFF',
     },
 })
-
-const mapStateToProps = ({ user }) => {
-    return {
-        email: user.email,
-        name: user.name,
-    }
-}
-
-const mapDispatchToProps = dispatch => {
-    return {
-        onLogout: () => dispatch(logout())
-    }
-}
-
-//export default Profile
-export default connect(mapStateToProps, mapDispatchToProps)(Profile)

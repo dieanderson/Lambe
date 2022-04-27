@@ -1,5 +1,4 @@
-import React, {Component} from 'react'
-import { connect } from 'react-redux'
+import React, { useState } from 'react'
 import {
     View,
     Text,
@@ -15,10 +14,19 @@ import {
 } from 'react-native'
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
 
-import { addPost } from '../store/actions/posts'
+import useEffectIf from '../hooks/UseEffectIf'
+import useFeed from '../data/hooks/useFeed'
+import useUser from '../data/hooks/useUser'
+import useEvent from '../data/hooks/useEvent'
 
-const noUser = 'Você precisa estar logado para adicionar imagens'
-class AddPhoto extends Component {
+export default props => {
+    const [image, setImage] = useState(null)
+    const [comment, setComment] = useState('')
+
+    const { addPost } = useFeed()
+    const { name: nickname, email } = useUser()
+    const { uploading } = useEvent()
+
     options = {
         saveToPhotos: true,
         mediaType: 'photo',
@@ -27,20 +35,7 @@ class AddPhoto extends Component {
         maxHeight: 600,
     }
 
-    state = {
-        image: null,
-        comment: '',
-    }
-
-    componentDidUpdate = prevProps => {
-        if (prevProps.loading && !this.props.loading) {
-            this.setState({
-                image: null,
-                comment: '',
-            })
-            this.props.navigation.navigate('Feed')
-        }
-    }
+    const canEdit = () => (email != null && email.trim() != '') && !uploading
 
     requestCameraPermission = async () => {
         if (Platform.OS === 'android') {
@@ -83,30 +78,24 @@ class AddPhoto extends Component {
         const isStoragePermitted = await this.requestExternalWritePermission()
         
         if (isCameraPermitted && isStoragePermitted) {
-            launchCamera(this.options, (response) => {
+            launchCamera(options, response => {
                 if (!response.didCancel) {
-                    this.setState({ image: {
-                        uri: response.assets[0].uri, 
-                        base64: response.assets[0].base64, } 
-                    })
+                    setImage({ uri: response.assets[0].uri, base64: response.assets[0].base64 })
                 }
-            });
+            })
         }
     }
 
     pickImage = () => {
-        launchImageLibrary(this.options, (response) => {
+        launchImageLibrary(options, response => {
             if (!response.didCancel) {
-                this.setState({ image: {
-                    uri: response.assets[0].uri,
-                    base64: response.assets[0].base64, }
-                })
+                setImage({ uri: response.assets[0].uri, base64: response.assets[0].base64 })
             }
         })
     }
 
     selectType = () => {
-        if (!this.props.name) {
+        if (!email) {
             Alert.alert('Atenção', noUser)
             return
         }
@@ -114,12 +103,12 @@ class AddPhoto extends Component {
             [
                 {
                     text: 'Galeria',
-                    onPress: () => this.pickImage(),
+                    onPress: () => pickImage(),
                     style: 'default',
                 },
                 {
                     text: 'Camera',
-                    onPress: () => this.captureImage(),
+                    onPress: () => captureImage(),
                     style: 'default',
                 },
             ],
@@ -130,49 +119,46 @@ class AddPhoto extends Component {
         )        
     }
 
-    save = async () => {
-        if (!this.props.name) {
-            Alert.alert('Atenção', noUser)
-            return
-        }
-        this.props.onAddPost({
+    const save = () => {
+        addPost({
             id: Math.random(),
-            nickname: this.props.name,
-            email: this.props.email,
-            image: this.state.image,
-            comments: [{
-                nickname: this.props.name,
-                comment: this.state.comment,
-            }]
+            nickname,
+            email,
+            image,
+            comments: [{nickname, comment}]
         })
     }
 
-    render() {
-        return (
-            <ScrollView>
-                <View style={styles.container}>
-                    <Text style={styles.title}>Compartilhe uma imagem</Text>
-                    <View style={styles.imageContainer}>
-                        <Image key={new Date()} source={this.state.image} style={styles.image} />                            
-                    </View>
-                    <TouchableOpacity onPress={this.selectType}
-                        disabled={this.props.loading}
-                        style={[styles.buttom, this.props.loading ? styles.buttonDisabled : null]}>
-                        <Text style={styles.buttomText}>Escolha a foto</Text>
-                    </TouchableOpacity>
-                    <TextInput placeholder='Adicione uma descrição para a foto...'
-                        style={styles.input} value={this.state.comment}
-                        editable={this.props.name ? true : false}
-                        onChangeText={comment => this.setState({ comment })} />
-                    <TouchableOpacity onPress={this.save}
-                        disabled={this.props.loading}
-                        style={[styles.buttom, this.props.loading ? styles.buttonDisabled : null]}>
-                        <Text style={styles.buttomText}>Salvar</Text>
-                    </TouchableOpacity>
+    useEffectIf(() => {
+        setImage(null)
+        setComment('')
+        props.navigation.navigate('Feed')
+    }, uploading, false)
+    
+    return (
+        <ScrollView>
+            <View style={styles.container}>
+                <Text style={styles.title}>Compartilhe uma imagem</Text>
+                <View style={styles.imageContainer}>
+                    <Image key={new Date()} source={image} style={styles.image} />                            
                 </View>
-            </ScrollView>
-        )
-    }
+                <TouchableOpacity onPress={selectType}
+                    disabled={!canEdit()}
+                    style={[styles.buttom, canEdit() ? {} : styles.buttonDisabled]}>
+                    <Text style={styles.buttomText}>Escolha a foto</Text>
+                </TouchableOpacity>
+                <TextInput placeholder='Adicione uma descrição para a foto...'
+                    style={styles.input} value={comment}
+                    editable={canEdit()}
+                    onChangeText={setComment} />
+                <TouchableOpacity onPress={save}
+                    disabled={!canEdit()}
+                    style={[styles.buttom, canEdit() ? {} : styles.buttonDisabled]}>
+                    <Text style={styles.buttomText}>Salvar</Text>
+                </TouchableOpacity>
+            </View>
+        </ScrollView>
+    )    
 }
 
 const styles = StyleSheet.create({
@@ -213,20 +199,3 @@ const styles = StyleSheet.create({
         backgroundColor: '#AAA'
     }
 })
-
-const mapStateToProps = ({ user, posts }) => {
-    return {
-        email: user.email,
-        name: user.name,
-        loading: posts.isUploading,
-    }
-}
-
-const mapDispatchToProps = dispatch => {
-    return {
-        onAddPost: post => dispatch(addPost(post))
-    }
-}
-
-//export default AddPhoto
-export default connect(mapStateToProps, mapDispatchToProps)(AddPhoto)

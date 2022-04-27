@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useEffect } from 'react'
 import {
     View,
     Text,
@@ -6,25 +6,24 @@ import {
     Image,
 } from 'react-native'
 
-export default class Splash extends Component {
-    componentDidMount = () => {
-        setTimeout(
-            () => { },//this.props.navigation.navigate('Tab') },
-            2000
-        )
-    }
+import useEvent from '../data/hooks/useEvent'
 
-    render () {
-        return (
-            <View style={styles.container}>
-                <Image 
-                    source={require('../../assets/imgs/icon.png')}
-                    style={styles.image}
-                />
-                <Text style={styles.header}>Lambe-Lambe</Text>
-            </View>
-        )
-    }
+export default props => {
+    const { endSplash } = useEvent()
+
+    useEffect(() => {
+        setTimeout(endSplash, 2000)
+    }, [])
+          
+    return (
+        <View style={styles.container}>
+            <Image 
+                source={require('../../assets/imgs/icon.png')}
+                style={styles.image}
+            />
+            <Text style={styles.header}>Lambe-Lambe</Text>
+        </View>
+    )    
 }
 
 const styles = StyleSheet.create({
@@ -40,6 +39,7 @@ const styles = StyleSheet.create({
     },
     header: {
         fontSize: 50,
-        fontWeight: 'bold',
+        color: "#000",
+        fontFamily: 'shelter',
     },
 })

@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React from 'react'
 import {
     StyleSheet,
     Platform,
@@ -11,26 +10,27 @@ import {
 import md5 from 'crypto-js/md5'
 
 import icon from '../../assets/imgs/icon.png'
+import useUser from '../data/hooks/useUser'
 
-class Header extends Component {
-    render() {
-        const name = this.props.name || 'Anonymous'
-        const avatar = this.props.email ?             
-            <Image source={{ uri: 'https://www.gravatar.com/avatar/'+md5(this.props.email).toString() }} style={styles.avatar}/>
-            : null
-        return(
-            <SafeAreaView style={styles.container}>
-                <View style={styles.rowContainer}>
-                    <Image source={icon}  style={styles.image}/>
-                    <Text style={styles.title}>Lambe Lambe</Text>
-                </View>
-                <View style={styles.userContainer}>
-                    <Text style={styles.user}>{name}</Text>
-                    {avatar}
-                </View>
-            </SafeAreaView>
-        )
-    }
+export default props => {
+    const { name, email } = useUser()
+
+    const username = name || 'Anonymous'
+    const avatar = email ?             
+        <Image source={{ uri: 'https://www.gravatar.com/avatar/'+md5(email).toString() }} style={styles.avatar}/>
+        : null
+    return(
+        <SafeAreaView style={styles.container}>
+            <View style={styles.rowContainer}>
+                <Image source={icon}  style={styles.image}/>
+                <Text style={styles.title}>Lambe Lambe</Text>
+            </View>
+            <View style={styles.userContainer}>
+                <Text style={styles.user}>{username}</Text>
+                {avatar}
+            </View>
+        </SafeAreaView>
+    )    
 }
 
 const styles = StyleSheet.create({
@@ -74,13 +74,3 @@ const styles = StyleSheet.create({
         marginRight:10,
     },
 })
-
-const mapStateToProps = ({ user }) => {
-    return {
-        email: user.email,
-        name: user.name,
-    }
-}
-
-//export default Header
-export default connect(mapStateToProps, null)(Header)

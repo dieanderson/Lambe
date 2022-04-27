@@ -1,5 +1,4 @@
-import React, {Component} from 'react'
-import { connect } from 'react-redux'
+import React from 'react'
 import {
     StyleSheet,
     View,
@@ -10,19 +9,21 @@ import {
 import Author from './Author'
 import Comments from './Comments'
 import AddComment from './AddComment'
+import useUser from '../data/hooks/useUser'
 
-class Post extends Component {
-    render() {
-        const addComment = this.props.name ? <AddComment postId={this.props.id}/> : null
-        return(
-            <View style={styles.container}>
-                <Image source={{ uri: this.props.image }} style={styles.image}/>
-                <Author email={this.props.email} nickname={this.props.nickname} />
-                <Comments comments={this.props.comments} />
-                {addComment}
-            </View>
-        )
-    }
+export default props => {
+    const { email } = useUser()
+
+    const addComment = email ? <AddComment postId={props.id} /> : null
+    return (
+        <View style={styles.container}>
+            <Image source={{ uri: props.image }} style={styles.image} />
+            <Author email={props.email} nickname={props.nickname} />
+            <Comments comments={props.comments} />
+            {addComment}
+        </View>
+    )
+    
 }
 
 const styles =  StyleSheet.create({
@@ -35,12 +36,3 @@ const styles =  StyleSheet.create({
         resizeMode: 'contain',
     },
 })
-
-const mapStateToProps = ({ user }) => {
-    return {
-        name: user.name
-    }
-}
-
-//export default Post
-export default connect(mapStateToProps, null)(Post)

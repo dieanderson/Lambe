@@ -1,5 +1,4 @@
-import React, {Component} from 'react'
-import { connect } from 'react-redux'
+import React, { useState } from 'react'
 import {
     View,
     Text,
@@ -8,61 +7,49 @@ import {
     TouchableOpacity,
 } from 'react-native'
 
-import { createUser } from '../store/actions/user'
+import useUser from '../data/hooks/useUser'
 
-class Register extends Component {
-    state= {
-        name: '',
-        email: '',
-        password: '',
-    }
+export default props => {
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
 
-    componentDidUpdate = prevProps => {
-        if (prevProps.isLoading && !this.props.isLoading) {
-            this.setState({
-                name: '',
-                email: '',
-                password: '',    
-            })
-            this.props.navigation.navigate('Profile')    
-        }
-    }
-
-    render () {
-        return (
-            <View style={styles.container}>
-                <TextInput 
-                    placeholder='Nome'
-                    style={styles.input}
-                    autoFocus={true}
-                    autoCapitalize='words'
-                    value={this.state.name}
-                    onChangeText={name => this.setState({ name })}
-                />
-                <TextInput 
-                    placeholder='E-mail'
-                    style={styles.input}
-                    keyboardType='email-address'
-                    autoCapitalize='none'
-                    value={this.state.email}
-                    onChangeText={email => this.setState({ email })}
-                />
-                <TextInput 
-                    placeholder='Senha'
-                    style={styles.input}
-                    secureTextEntry={true}
-                    value={this.state.password}
-                    onChangeText={password => this.setState({ password })}
-                />
-                <TouchableOpacity 
-                    onPress={() => { this.props.onCreateUser(this.state) }} 
-                    style={styles.button}
-                >
-                    <Text style={styles.buttonText}>Salvar</Text>
-                </TouchableOpacity>
-            </View>
-        )
-    }
+    const { createUser } = useUser()
+        
+    return (
+        <View style={styles.container}>
+            <TextInput 
+                placeholder='Nome'
+                style={styles.input}
+                autoFocus={true}
+                autoCapitalize='words'
+                value={name}
+                onChangeText={setName}
+            />
+            <TextInput 
+                placeholder='E-mail'
+                style={styles.input}
+                keyboardType='email-address'
+                autoCapitalize='none'
+                value={email}
+                onChangeText={setEmail}
+            />
+            <TextInput 
+                placeholder='Senha'
+                style={styles.input}
+                secureTextEntry={true}
+                value={password}
+                onChangeText={setPassword}
+            />
+            <TouchableOpacity 
+                onPress={() => createUser({name, email, password})} 
+                style={styles.button}
+            >
+                <Text style={styles.buttonText}>Salvar</Text>
+            </TouchableOpacity>
+        </View>
+    )
+    
 }
 
 const styles = StyleSheet.create({
@@ -90,18 +77,3 @@ const styles = StyleSheet.create({
         color: '#FFF',
     },
 })
-
-const mapStateToProps = ({ user }) => {
-    return {
-        isLoading: user.isLoading
-    }
-}
-
-const mapDispatchToProps = dispatch => {
-    return {
-        onCreateUser: user => dispatch(createUser(user))
-    }
-}
-
-//export default Register
-export default connect(mapStateToProps, mapDispatchToProps)(Register)

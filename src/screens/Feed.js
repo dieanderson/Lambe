@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React, { useEffect } from 'react'
 import {
     StyleSheet,
     FlatList,
@@ -8,24 +7,26 @@ import {
 
 import Header from '../components/Header'
 import Post from '../components/Post'
-import { fetchPosts } from '../store/actions/posts'
 
-class Feed extends Component {
-    componentDidMount = () => {
-        this.props.onFetchPosts()
-    }
-    render() {
-        return (
-            <View style={styles.container}>
-                <Header />
-                <FlatList
-                    data={this.props.posts}
-                    keyExtractor={item => `${item.id}`}
-                    renderItem={({ item }) => <Post key={item.id} {...item} />}
-                />
-            </View>
-        )
-    }
+import useFeed from '../data/hooks/useFeed'
+
+export default props => {
+    const { posts, fetchPosts } = useFeed()
+    
+    useEffect(() => {
+        fetchPosts()
+    }, [])
+
+    return (
+        <View style={styles.container}>
+            <Header />
+            <FlatList
+                data={posts}
+                keyExtractor={item => `${item.id}`}
+                renderItem={({ item }) => <Post key={item.id} {...item} />}
+            />
+        </View>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -36,18 +37,3 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5FCFF',
     },
 })
-
-const mapStateToProps = ({ posts }) => {
-    return {
-        posts: posts.posts
-    }
-}
-
-const mapDispatchToProps = dispatch => {
-    return {
-        onFetchPosts: () => dispatch(fetchPosts())
-    }
-}
-
-//export default Feed
-export default connect(mapStateToProps, mapDispatchToProps)(Feed)
