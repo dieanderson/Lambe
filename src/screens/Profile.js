@@ -18,6 +18,7 @@ export default props => {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.title}>Sua Conta</Text>
             <Image source={{ uri: avatar }} style={styles.avatar}/>
             <Text style={styles.nickname}>{name}</Text>
             <Text style={styles.email}>{email}</Text>
@@ -34,28 +35,35 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
     },
+    title: {
+        marginTop: 70,
+        fontSize: 20,
+        fontWeight: 'bold',    
+    },
     avatar: {
-        width: 150,
-        height: 150,
-        borderRadius: 75,
-        marginTop: 100,
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        marginTop: 80,
     },
     nickname: {
         marginTop: 30,
-        fontSize: 30,
-        fontWeight: 'bold',
+        fontSize: 25,
     },
     email: {
         marginTop: 20,
-        fontSize: 25,
+        fontSize: 20,
     },
     button: {
-        marginTop: 30,
+        width: '90%',
+        marginTop: 50,
         padding: 10,
         backgroundColor: '#4286f4',
+        borderRadius: 5,
     },
     buttonText: {
         fontSize: 20,
         color: '#FFF',
+        textAlign: 'center',
     },
 })

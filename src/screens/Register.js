@@ -66,14 +66,18 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#333',
         paddingLeft: 15,
+        borderRadius: 5,
     },
     button: {
         marginTop: 30,
         padding: 10,
         backgroundColor: '#4286f4',
+        width: '90%',
+        borderRadius: 5,
     },
     buttonText:{
         fontSize: 20,
         color: '#FFF',
+        textAlign: 'center',
     },
 })

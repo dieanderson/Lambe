@@ -28,15 +28,15 @@ export default props => {
     
     const Auth = () => (
         <AuthStack.Navigator initialRouteName='Login'>
-            <AuthStack.Screen name='Login' component={Login} />
-            <AuthStack.Screen name='Register' component={Register} />
+            <AuthStack.Screen name='Login' options={{title: 'Autenticar'}}component={Login} />
+            <AuthStack.Screen name='Register' options={{title: 'Criar Conta'}} component={Register} />
         </AuthStack.Navigator>
     )
 
     const AuthOrProfile = () => (
         <SwitchStack.Navigator screenOptions={{headerShown: false}}>
             { email ?
-                <SwitchStack.Screen name='Home' component={Profile} />                     
+                <SwitchStack.Screen name='Home' options={{title: 'Sua Conta'}} component={Profile} />                     
             :
                 <SwitchStack.Screen name='Auth' component={Auth} />     
             }                      
